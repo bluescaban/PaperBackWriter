@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body style="margin:0;padding:0;overflow:hidden;width:100%;height:100%;">
+    <iframe
+      id="app"
+      src="http://localhost:3000"
+      style="position:absolute;width:100%;height:100%;border:none;"
+    ></iframe>
+
+    <script>
+      var iframe = document.getElementById('app');
+
+      // Figma → React app: forward plugin messages into the iframe
+      window.onmessage = function (event) {
+        if (event.data && event.data.pluginMessage !== undefined) {
+          iframe.contentWindow.postMessage(
+            { source: 'figma-plugin', pluginMessage: event.data.pluginMessage },
+            '*'
+          );
+        }
+      };
+
+      // React app → Figma: forward messages out to plugin code
+      window.addEventListener('message', function (event) {
+        if (event.source === iframe.contentWindow && event.data && event.data.pluginMessage) {
+          parent.postMessage({ pluginMessage: event.data.pluginMessage }, '*');
+        }
+      });
+    </script>
+  </body>
+</html>

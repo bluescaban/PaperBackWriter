@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "lib": ["ES6"],
+    "strict": true,
+    "moduleResolution": "node",
+    "typeRoots": ["../node_modules/@figma/plugin-typings"],
+    "noEmit": true
+  },
+  "include": ["code.ts"]
+}
