@@ -1,0 +1,73 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.heading {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--text-primary);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.option,
+.optionActive {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.option:hover {
+  border-color: var(--accent);
+}
+
+.optionActive {
+  border-color: var(--accent);
+  background: var(--accent-faint);
+}
+
+.option input,
+.optionActive input {
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.optionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.optionBody strong {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.optionBody span {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: var(--accent);
+  line-height: 1.5;
+  border-left: 2px solid var(--accent);
+  padding-left: 0.5rem;
+}

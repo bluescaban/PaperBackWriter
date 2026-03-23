@@ -16,6 +16,48 @@ export async function parseDocumentFromUrl(url: string): Promise<ParsedDocument>
 }
 
 /**
+ * Parses plain text (e.g. from AI generation) into structured sections.
+ * Treats ALL-CAPS lines as section headings, same rules as the HTML extractor.
+ */
+export function parseDocumentFromText(text: string): ParsedDocument {
+  const sections: DocumentSection[] = [];
+  let currentSection: DocumentSection | null = null;
+  let idCounter = 0;
+
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim();
+    if (!line) continue;
+
+    if (isSectionHeader(line)) {
+      if (currentSection) sections.push(currentSection);
+      currentSection = {
+        id: `section-${++idCounter}`,
+        heading: line.replace(/:$/, '').trim(),
+        level: 2,
+        content: '',
+        paragraphs: [],
+      };
+    } else {
+      if (!currentSection) {
+        currentSection = {
+          id: `section-${++idCounter}`,
+          heading: '',
+          level: 0,
+          content: '',
+          paragraphs: [],
+        };
+      }
+      currentSection.paragraphs.push(line);
+      currentSection.content += (currentSection.content ? '\n\n' : '') + line;
+    }
+  }
+
+  if (currentSection) sections.push(currentSection);
+  const title = sections[0]?.heading || 'AI Generated Personas';
+  return { title, sections, rawText: text };
+}
+
+/**
  * Parses a .docx ArrayBuffer (e.g. from a file input) into structured sections.
  */
 export async function parseDocumentFromBuffer(buffer: ArrayBuffer): Promise<ParsedDocument> {

@@ -23,6 +23,32 @@ export interface TargetSelection {
   azureDevOps: boolean;
 }
 
+// ─── Templates ───────────────────────────────────────────────────────────────
+
+export type TemplateType = 'project-summary' | 'persona-cards';
+
+export interface TemplateDef {
+  id: TemplateType;
+  label: string;
+  description: string;
+  docHint: string;
+}
+
+export const TEMPLATES: TemplateDef[] = [
+  {
+    id: 'project-summary',
+    label: 'Project Summary',
+    description: 'Visualizes goals, personas, requirements, user flows, and more as a color-coded blueprint.',
+    docHint: 'Document should have ALL-CAPS section headers: CONTEXT, PERSONAS, GOALS, REQUIREMENTS, USER FLOW NOTES, EDGE CASES, OPEN QUESTIONS.',
+  },
+  {
+    id: 'persona-cards',
+    label: 'Persona Cards',
+    description: 'Generates a two-part persona card for each persona: a behavioral profile and a user profile.',
+    docHint: 'Each persona starts with an ALL-CAPS name heading. Sub-sections: INTENT, MY GOALS, MY UX HABITS, HOW I USE TOOLS, WHAT BRINGS ME HERE, RISK TOLERANCE, WHAT FRUSTRATES ME, I DONT WANT TO, NAME, AGE, OCCUPATION, CHARACTERISTICS, QUOTE, MOTIVATIONS, GOALS, FRUSTRATIONS.',
+  },
+];
+
 // ─── Figma ────────────────────────────────────────────────────────────────────
 
 export interface FigmaConfig {
