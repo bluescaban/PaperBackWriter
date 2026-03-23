@@ -53,6 +53,12 @@ export function useAppStore() {
     }
   }, []);
 
+  const loadFromGeneratedText = useCallback((doc: ParsedDocument) => {
+    setDocument(doc);
+    setStatus('doc-ready');
+    setError(null);
+  }, []);
+
   const loadFromFile = useCallback(async (file: File) => {
     setStatus('loading-doc');
     setError(null);
@@ -103,6 +109,6 @@ export function useAppStore() {
     status, docUrl, document, targets, figmaConfig, azureConfig, template, overwrite, results, error,
     // Actions
     setDocUrl, setTargets, setFigmaConfig, setAzureConfig, setTemplate, setOverwrite,
-    loadFromUrl, loadFromFile, write, reset,
+    loadFromUrl, loadFromFile, loadFromGeneratedText, write, reset,
   };
 }
