@@ -46,6 +46,35 @@
   color: var(--text-secondary);
 }
 
+.providerRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.providerBtn {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.providerBtn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.providerActive {
+  background: linear-gradient(135deg, #7c3aed22, #a855f722);
+  border-color: var(--accent);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 .keyRow {
   display: flex;
   gap: 0.5rem;
@@ -92,6 +121,12 @@
   font-size: 0.8rem;
   cursor: pointer;
   white-space: nowrap;
+}
+
+.keyStatus {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem;
 }
 
 .hint {

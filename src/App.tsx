@@ -47,7 +47,10 @@ export default function App() {
           )}
 
           {store.targets.figma && store.template === 'persona-cards' && (
-            <AIGenerate onGenerated={store.loadFromGeneratedText} />
+            <AIGenerate
+              sourceDocument={store.document}
+              onGenerated={store.loadFromGeneratedText}
+            />
           )}
 
           {store.targets.figma && (

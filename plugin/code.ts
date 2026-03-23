@@ -95,13 +95,43 @@ const NUM_COLS   = SECTIONS.length;
 const ROOT_W     = H_PADDING * 2 + COLUMN_W * NUM_COLS + COLUMN_GAP * (NUM_COLS - 1);
 
 // Persona card dimensions
-const P1_W = 560; // Part 1 — behavioral
-const P2_W = 360; // Part 2 — profile
-const P_GAP = 24;
+const P1_W = 580;
+const P2_W = 380;
+const P_GAP = 28;
 const PERSONA_ROOT_W = H_PADDING * 2 + P1_W + P_GAP + P2_W;
-const PERSONA_ACCENT: RGB = { r: 0.42, g: 0.15, b: 0.85 };
-const PERSONA_ACCENT_LIGHT: RGB = { r: 0.95, g: 0.92, b: 1.00 };
-const PERSONA_DARK: RGB = { r: 0.10, g: 0.06, b: 0.20 };
+
+// ── Glass morphism pastel palette ──────────────────────────────────────────────
+const G = {
+  // Canvas
+  canvas:       { r: 0.94, g: 0.91, b: 0.99 }, // soft lavender
+
+  // Glass card
+  cardFill:     { r: 1.00, g: 1.00, b: 1.00 }, // white @ 0.82 opacity
+  cardBorder:   { r: 1.00, g: 1.00, b: 1.00 }, // white @ 0.55 opacity
+
+  // Tinted section blocks
+  headerTint:   { r: 0.91, g: 0.86, b: 1.00 }, // pastel purple
+  intentTint:   { r: 0.96, g: 0.94, b: 1.00 }, // near-white lavender
+  quoteTint:    { r: 0.96, g: 0.92, b: 1.00 }, // soft lilac
+  profileTint:  { r: 0.97, g: 0.92, b: 0.98 }, // pale rose-lavender
+
+  // Divider
+  divider:      { r: 0.82, g: 0.76, b: 0.96 }, // lavender divider @ 0.35 opacity
+
+  // Text
+  heading:      { r: 0.16, g: 0.10, b: 0.30 }, // deep purple-black
+  body:         { r: 0.36, g: 0.28, b: 0.50 }, // medium purple-gray
+  label:        { r: 0.55, g: 0.43, b: 0.72 }, // soft purple label
+  muted:        { r: 0.68, g: 0.60, b: 0.80 }, // muted lavender
+  white:        { r: 1.00, g: 1.00, b: 1.00 },
+
+  // Accent
+  accent:       { r: 0.55, g: 0.38, b: 0.84 }, // medium purple
+  accentPastel: { r: 0.78, g: 0.65, b: 0.96 }, // light pastel purple
+  accentPill:   { r: 0.93, g: 0.88, b: 1.00 }, // pill background
+  riskActive:   { r: 0.65, g: 0.50, b: 0.90 }, // active risk pill
+  riskInactive: { r: 0.91, g: 0.88, b: 0.96 }, // inactive risk pill
+};
 
 // ─── Plugin entry ─────────────────────────────────────────────────────────────
 
@@ -353,14 +383,14 @@ function buildPart1Card(p: PersonaData): FrameNode {
   header.paddingTop = 24;
   header.paddingBottom = 20;
   header.itemSpacing = 6;
-  header.fills = [{ type: 'SOLID', color: PERSONA_DARK }];
+  header.fills = [{ type: 'SOLID', color: G.headerTint }];
 
-  const eyebrow = txt('BEHAVIORAL PROFILE', 9, 'Bold', { r: 0.55, g: 0.45, b: 0.75 });
+  const eyebrow = txt('BEHAVIORAL PROFILE', 9, 'Bold', G.label);
   eyebrow.letterSpacing = { value: 2, unit: 'PIXELS' };
   header.appendChild(eyebrow);
   eyebrow.layoutSizingHorizontal = 'FILL';
 
-  const nameNode = txt(p.name, 22, 'Bold', C.lightText);
+  const nameNode = txt(p.name, 22, 'Bold', G.heading);
   header.appendChild(nameNode);
   nameNode.layoutSizingHorizontal = 'FILL';
 
@@ -376,14 +406,14 @@ function buildPart1Card(p: PersonaData): FrameNode {
     intentBlock.paddingTop = 16;
     intentBlock.paddingBottom = 16;
     intentBlock.itemSpacing = 4;
-    intentBlock.fills = [{ type: 'SOLID', color: PERSONA_ACCENT_LIGHT }];
+    intentBlock.fills = [{ type: 'SOLID', color: G.intentTint }];
 
-    const intentLabel = txt('PERSONA INTENT', 9, 'Bold', PERSONA_ACCENT);
+    const intentLabel = txt('PERSONA INTENT', 9, 'Bold', G.accent);
     intentLabel.letterSpacing = { value: 1.5, unit: 'PIXELS' };
     intentBlock.appendChild(intentLabel);
     intentLabel.layoutSizingHorizontal = 'FILL';
 
-    const intentText = txt(`"${p.intent}"`, 14, 'Italic', { r: 0.25, g: 0.10, b: 0.45 });
+    const intentText = txt(`"${p.intent}"`, 14, 'Italic', G.body);
     intentText.lineHeight = { value: 155, unit: 'PERCENT' };
     intentBlock.appendChild(intentText);
     intentText.layoutSizingHorizontal = 'FILL';
@@ -443,18 +473,18 @@ function buildBehaviorCell(label: string, items: string[], width: number): Frame
   cell.itemSpacing = 6;
   cell.fills = [];
 
-  const labelNode = txt(label, 9, 'Bold', PERSONA_ACCENT);
+  const labelNode = txt(label, 9, 'Bold', G.accent);
   labelNode.letterSpacing = { value: 1.2, unit: 'PIXELS' };
   cell.appendChild(labelNode);
   labelNode.layoutSizingHorizontal = 'FILL';
 
   if (items.length === 0) {
-    const empty = txt('—', 12, 'Regular', C.mutedText);
+    const empty = txt('—', 12, 'Regular', G.muted);
     cell.appendChild(empty);
     empty.layoutSizingHorizontal = 'FILL';
   } else {
     for (const item of items) {
-      const bullet = txt('• ' + item, 12, 'Regular', C.bodyText);
+      const bullet = txt('• ' + item, 12, 'Regular', G.body);
       bullet.lineHeight = { value: 148, unit: 'PERCENT' };
       cell.appendChild(bullet);
       bullet.layoutSizingHorizontal = 'FILL';
@@ -472,7 +502,7 @@ function buildRiskRow(level: string, width: number): FrameNode {
   row.itemSpacing = 12;
   row.fills = [];
 
-  const label = txt('RISK TOLERANCE', 9, 'Bold', PERSONA_ACCENT);
+  const label = txt('RISK TOLERANCE', 9, 'Bold', G.accent);
   label.letterSpacing = { value: 1.2, unit: 'PIXELS' };
   row.appendChild(label);
 
@@ -489,9 +519,9 @@ function buildRiskRow(level: string, width: number): FrameNode {
     pill.paddingBottom = 4;
     pill.cornerRadius = 999;
     pill.fills = active
-      ? [{ type: 'SOLID', color: PERSONA_ACCENT }]
-      : [{ type: 'SOLID', color: C.divider }];
-    const pillText = txt(l, 10, active ? 'Bold' : 'Regular', active ? C.lightText : C.mutedText);
+      ? [{ type: 'SOLID', color: G.riskActive }]
+      : [{ type: 'SOLID', color: G.riskInactive }];
+    const pillText = txt(l, 10, active ? 'Bold' : 'Regular', active ? G.white : G.muted);
     pill.appendChild(pillText);
     row.appendChild(pill);
   }
@@ -519,17 +549,17 @@ function buildPart2Card(p: PersonaData): FrameNode {
   profileHeader.paddingTop = 24;
   profileHeader.paddingBottom = 20;
   profileHeader.itemSpacing = 8;
-  profileHeader.fills = [{ type: 'SOLID', color: PERSONA_ACCENT_LIGHT }];
+  profileHeader.fills = [{ type: 'SOLID', color: G.profileTint }];
 
   // Name
-  const nameNode = txt(p.profileName || p.name, 20, 'Bold', PERSONA_DARK);
+  const nameNode = txt(p.profileName || p.name, 20, 'Bold', G.heading);
   profileHeader.appendChild(nameNode);
   nameNode.layoutSizingHorizontal = 'FILL';
 
   // Age + Occupation
   const demo = [p.age, p.occupation].filter(Boolean).join('  ·  ');
   if (demo) {
-    const demoNode = txt(demo, 12, 'Regular', { r: 0.35, g: 0.20, b: 0.55 });
+    const demoNode = txt(demo, 12, 'Regular', G.body);
     profileHeader.appendChild(demoNode);
     demoNode.layoutSizingHorizontal = 'FILL';
   }
@@ -553,8 +583,8 @@ function buildPart2Card(p: PersonaData): FrameNode {
       pill.paddingTop = 4;
       pill.paddingBottom = 4;
       pill.cornerRadius = 999;
-      pill.fills = [{ type: 'SOLID', color: PERSONA_ACCENT, opacity: 0.12 }];
-      const t = txt(trait, 10, 'Medium', PERSONA_ACCENT);
+      pill.fills = [{ type: 'SOLID', color: G.accentPill }];
+      const t = txt(trait, 10, 'Medium', G.accent);
       pill.appendChild(t);
       pillRow.appendChild(pill);
     }
@@ -587,11 +617,11 @@ function buildPart2Card(p: PersonaData): FrameNode {
     quoteBlock.paddingBottom = 12;
     quoteBlock.itemSpacing = 0;
     quoteBlock.cornerRadius = 6;
-    quoteBlock.fills = [{ type: 'SOLID', color: PERSONA_ACCENT_LIGHT }];
-    quoteBlock.strokes = [{ type: 'SOLID', color: PERSONA_ACCENT, opacity: 0.3 }];
+    quoteBlock.fills = [{ type: 'SOLID', color: G.quoteTint }];
+    quoteBlock.strokes = [{ type: 'SOLID', color: G.accentPastel }];
     quoteBlock.strokeWeight = 1;
 
-    const quoteText = txt(`"${p.quote}"`, 13, 'Italic', { r: 0.25, g: 0.10, b: 0.45 });
+    const quoteText = txt(`"${p.quote}"`, 13, 'Italic', G.body);
     quoteText.lineHeight = { value: 155, unit: 'PERCENT' };
     quoteBlock.appendChild(quoteText);
     quoteText.layoutSizingHorizontal = 'FILL';
@@ -630,20 +660,20 @@ function buildProfileSection(label: string, items: string[], bullets: boolean, w
   col.itemSpacing = 6;
   col.fills = [];
 
-  const labelNode = txt(label, 9, 'Bold', PERSONA_ACCENT);
+  const labelNode = txt(label, 9, 'Bold', G.accent);
   labelNode.letterSpacing = { value: 1.2, unit: 'PIXELS' };
   col.appendChild(labelNode);
   labelNode.layoutSizingHorizontal = 'FILL';
 
   for (const item of items) {
-    const t = txt(bullets ? '• ' + item : item, 12, 'Regular', C.bodyText);
+    const t = txt(bullets ? '• ' + item : item, 12, 'Regular', G.body);
     t.lineHeight = { value: 148, unit: 'PERCENT' };
     col.appendChild(t);
     t.layoutSizingHorizontal = 'FILL';
   }
 
   if (items.length === 0) {
-    const empty = txt('—', 12, 'Regular', C.mutedText);
+    const empty = txt('—', 12, 'Regular', G.muted);
     col.appendChild(empty);
     empty.layoutSizingHorizontal = 'FILL';
   }

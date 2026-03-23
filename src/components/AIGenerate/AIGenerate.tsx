@@ -1,43 +1,56 @@
 import { useState, useEffect } from 'react';
-import { generatePersonas } from '../../services/aiService';
+import {
+  generatePersonasFromDocument,
+  getApiKey,
+  getEnvProvider,
+  saveApiKeyOverride,
+  type AIProvider,
+} from '../../services/aiService';
 import { parseDocumentFromText } from '../../services/documentParser';
 import type { ParsedDocument } from '../../types';
 import styles from './AIGenerate.module.css';
 
-const API_KEY_STORAGE = 'pbw_anthropic_api_key';
-
 interface Props {
+  sourceDocument: ParsedDocument | null;
   onGenerated: (doc: ParsedDocument) => void;
 }
 
-export function AIGenerate({ onGenerated }: Props) {
-  const [apiKey, setApiKey] = useState('');
+export function AIGenerate({ sourceDocument, onGenerated }: Props) {
+  const [provider, setProvider] = useState<AIProvider>('anthropic');
+  const [keyOverride, setKeyOverride] = useState('');
   const [showKey, setShowKey] = useState(false);
-  const [description, setDescription] = useState('');
-  const [focusHint, setFocusHint] = useState('');
   const [count, setCount] = useState(2);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Persist API key in localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem(API_KEY_STORAGE);
-    if (saved) setApiKey(saved);
-  }, []);
+  const envProvider = getEnvProvider();
+  const keyFromEnv = envProvider === provider;
 
-  function saveKey(value: string) {
-    setApiKey(value);
-    if (value) localStorage.setItem(API_KEY_STORAGE, value);
-    else localStorage.removeItem(API_KEY_STORAGE);
+  useEffect(() => {
+    if (!keyFromEnv) {
+      const saved = getApiKey(provider);
+      setKeyOverride(saved);
+    } else {
+      setKeyOverride('');
+    }
+  }, [provider, keyFromEnv]);
+
+  function handleKeySave(value: string) {
+    setKeyOverride(value);
+    saveApiKeyOverride(provider, value);
   }
 
   async function handleGenerate() {
-    if (!apiKey.trim()) { setError('Enter your Anthropic API key first.'); return; }
-    if (!description.trim()) { setError('Describe the product or context.'); return; }
+    if (!sourceDocument) { setError('Load a document first.'); return; }
     setLoading(true);
     setError(null);
     try {
-      const raw = await generatePersonas(apiKey, description, count, focusHint || undefined);
+      const raw = await generatePersonasFromDocument(
+        sourceDocument.rawText,
+        count,
+        provider,
+        keyFromEnv ? undefined : keyOverride || undefined,
+      );
       const doc = parseDocumentFromText(raw);
       onGenerated(doc);
     } catch (err) {
@@ -50,56 +63,61 @@ export function AIGenerate({ onGenerated }: Props) {
   return (
     <section className={styles.card}>
       <div className={styles.headerRow}>
-        <h2 className={styles.heading}>Generate with AI</h2>
-        <span className={styles.badge}>Claude</span>
+        <h2 className={styles.heading}>Generate Personas with AI</h2>
+        <span className={styles.badge}>{provider === 'anthropic' ? 'Claude' : 'ChatGPT'}</span>
       </div>
 
+      <p className={styles.description}>
+        AI reads your uploaded document and generates structured persona cards from its content.
+      </p>
+
+      {/* Provider toggle */}
       <label className={styles.field}>
-        <span>Anthropic API Key</span>
-        <div className={styles.keyRow}>
-          <input
-            className={styles.input}
-            type={showKey ? 'text' : 'password'}
-            placeholder="sk-ant-..."
-            value={apiKey}
-            onChange={(e) => saveKey(e.target.value)}
-          />
-          <button className={styles.toggleBtn} onClick={() => setShowKey((v) => !v)}>
-            {showKey ? 'Hide' : 'Show'}
+        <span>AI Provider</span>
+        <div className={styles.providerRow}>
+          <button
+            className={`${styles.providerBtn} ${provider === 'anthropic' ? styles.providerActive : ''}`}
+            onClick={() => setProvider('anthropic')}
+          >
+            Anthropic (Claude)
+          </button>
+          <button
+            className={`${styles.providerBtn} ${provider === 'openai' ? styles.providerActive : ''}`}
+            onClick={() => setProvider('openai')}
+          >
+            OpenAI (ChatGPT)
           </button>
         </div>
-        <span className={styles.hint}>Stored in your browser only. Never sent anywhere except Anthropic.</span>
       </label>
 
-      <label className={styles.field}>
-        <span>Product / Context</span>
-        <textarea
-          className={styles.textarea}
-          placeholder="e.g. A karaoke feature inside Spotify that lets users sing along solo or with friends"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={3}
-        />
-      </label>
+      {/* API key input — only shown if not set in .env for this provider */}
+      {keyFromEnv ? (
+        <p className={styles.keyStatus}>
+          {provider === 'anthropic' ? 'Anthropic' : 'OpenAI'} API key loaded from .env
+        </p>
+      ) : (
+        <label className={styles.field}>
+          <span>{provider === 'anthropic' ? 'Anthropic' : 'OpenAI'} API Key</span>
+          <div className={styles.keyRow}>
+            <input
+              className={styles.input}
+              type={showKey ? 'text' : 'password'}
+              placeholder={provider === 'anthropic' ? 'sk-ant-… (or add to .env)' : 'sk-… (or add to .env)'}
+              value={keyOverride}
+              onChange={(e) => handleKeySave(e.target.value)}
+            />
+            <button className={styles.toggleBtn} onClick={() => setShowKey((v) => !v)}>
+              {showKey ? 'Hide' : 'Show'}
+            </button>
+          </div>
+        </label>
+      )}
 
       <label className={styles.field}>
-        <span>User types to focus on <small>(optional)</small></span>
-        <input
-          className={styles.input}
-          placeholder="e.g. casual listener, power user, first-time user"
-          value={focusHint}
-          onChange={(e) => setFocusHint(e.target.value)}
-        />
-      </label>
-
-      <label className={styles.field}>
-        <span>Number of personas: <strong>{count}</strong></span>
+        <span>Personas to generate: <strong>{count}</strong></span>
         <input
           className={styles.range}
-          type="range"
-          min={1}
-          max={4}
-          value={count}
+          type="range" min={1} max={4} value={count}
           onChange={(e) => setCount(Number(e.target.value))}
         />
         <div className={styles.rangeLabels}><span>1</span><span>4</span></div>
@@ -110,9 +128,13 @@ export function AIGenerate({ onGenerated }: Props) {
       <button
         className={styles.generateBtn}
         onClick={handleGenerate}
-        disabled={loading}
+        disabled={loading || !sourceDocument}
       >
-        {loading ? 'Generating…' : `Generate ${count} Persona${count > 1 ? 's' : ''}`}
+        {loading
+          ? 'Generating…'
+          : sourceDocument
+            ? `Generate ${count} Persona${count > 1 ? 's' : ''} from Document`
+            : 'Load a document first'}
       </button>
     </section>
   );
