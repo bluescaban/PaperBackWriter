@@ -1,4 +1,4 @@
-import type { FigmaWriteResult, ParsedDocument } from '../types';
+import type { FigmaWriteResult, ParsedDocument, TemplateType } from '../types';
 
 /**
  * Figma Plugin bridge service.
@@ -46,6 +46,7 @@ export async function writeDocumentToFigma(
   pageId: string | undefined,
   frameName: string | undefined,
   document: ParsedDocument,
+  template: TemplateType,
   overwrite: boolean,
 ): Promise<FigmaWriteResult> {
   return new Promise((resolve) => {
@@ -70,6 +71,7 @@ export async function writeDocumentToFigma(
       document,
       pageId,
       frameName,
+      template,
       overwrite,
     });
   });

@@ -1,6 +1,7 @@
 import { useAppStore } from './store/appStore';
 import { SourceInput } from './components/SourceInput/SourceInput';
 import { TargetSelector } from './components/TargetSelector/TargetSelector';
+import { TemplateSelector } from './components/TemplateSelector/TemplateSelector';
 import { FigmaConfig } from './components/FigmaConfig/FigmaConfig';
 import { AzureDevOpsConfig } from './components/AzureDevOpsConfig/AzureDevOpsConfig';
 import { Preview } from './components/Preview/Preview';
@@ -39,6 +40,10 @@ export default function App() {
             overwrite={store.overwrite}
             onOverwriteChange={store.setOverwrite}
           />
+
+          {store.targets.figma && (
+            <TemplateSelector value={store.template} onChange={store.setTemplate} />
+          )}
 
           {store.targets.figma && (
             <FigmaConfig config={store.figmaConfig} onChange={store.setFigmaConfig} />

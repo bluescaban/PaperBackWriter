@@ -5,6 +5,7 @@ import type {
   FigmaConfig,
   AzureDevOpsConfig,
   TargetSelection,
+  TemplateType,
   WriteResults,
 } from '../types';
 import { parseDocumentFromUrl, parseDocumentFromBuffer } from '../services/documentParser';
@@ -33,6 +34,7 @@ export function useAppStore() {
   const [targets, setTargets] = useState<TargetSelection>({ figma: true, azureDevOps: false });
   const [figmaConfig, setFigmaConfig] = useState<FigmaConfig>(defaultFigmaConfig);
   const [azureConfig, setAzureConfig] = useState<AzureDevOpsConfig>(defaultAzureConfig);
+  const [template, setTemplate] = useState<TemplateType>('project-summary');
   const [overwrite, setOverwrite] = useState(false);
   const [results, setResults] = useState<WriteResults | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +78,7 @@ export function useAppStore() {
 
     try {
       if (targets.figma) {
-        writeResults.figma = await writeDocumentToFigma(figmaConfig.pageId, figmaConfig.frameName, document, overwrite);
+        writeResults.figma = await writeDocumentToFigma(figmaConfig.pageId, figmaConfig.frameName, document, template, overwrite);
       }
       if (targets.azureDevOps) {
         writeResults.azureDevOps = await writeDocumentToAzureDevOps(azureConfig, document, overwrite);
@@ -98,9 +100,9 @@ export function useAppStore() {
 
   return {
     // State
-    status, docUrl, document, targets, figmaConfig, azureConfig, overwrite, results, error,
+    status, docUrl, document, targets, figmaConfig, azureConfig, template, overwrite, results, error,
     // Actions
-    setDocUrl, setTargets, setFigmaConfig, setAzureConfig, setOverwrite,
+    setDocUrl, setTargets, setFigmaConfig, setAzureConfig, setTemplate, setOverwrite,
     loadFromUrl, loadFromFile, write, reset,
   };
 }
