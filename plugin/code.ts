@@ -103,34 +103,34 @@ const PERSONA_ROOT_W = H_PADDING * 2 + P1_W + P_GAP + P2_W;
 // ── Glass morphism pastel palette ──────────────────────────────────────────────
 const G = {
   // Canvas
-  canvas:       { r: 0.94, g: 0.91, b: 0.99 }, // soft lavender
+  canvas:       { r: 0.90, g: 0.94, b: 0.99 }, // soft sky blue
 
   // Glass card
   cardFill:     { r: 1.00, g: 1.00, b: 1.00 }, // white @ 0.82 opacity
   cardBorder:   { r: 1.00, g: 1.00, b: 1.00 }, // white @ 0.55 opacity
 
   // Tinted section blocks
-  headerTint:   { r: 0.91, g: 0.86, b: 1.00 }, // pastel purple
-  intentTint:   { r: 0.96, g: 0.94, b: 1.00 }, // near-white lavender
-  quoteTint:    { r: 0.96, g: 0.92, b: 1.00 }, // soft lilac
-  profileTint:  { r: 0.97, g: 0.92, b: 0.98 }, // pale rose-lavender
+  headerTint:   { r: 0.84, g: 0.92, b: 1.00 }, // pastel blue
+  intentTint:   { r: 0.93, g: 0.97, b: 1.00 }, // near-white ice blue
+  quoteTint:    { r: 0.90, g: 0.95, b: 1.00 }, // soft sky
+  profileTint:  { r: 0.91, g: 0.96, b: 1.00 }, // pale blue
 
   // Divider
-  divider:      { r: 0.82, g: 0.76, b: 0.96 }, // lavender divider @ 0.35 opacity
+  divider:      { r: 0.72, g: 0.84, b: 0.96 }, // blue divider
 
   // Text
-  heading:      { r: 0.16, g: 0.10, b: 0.30 }, // deep purple-black
-  body:         { r: 0.36, g: 0.28, b: 0.50 }, // medium purple-gray
-  label:        { r: 0.55, g: 0.43, b: 0.72 }, // soft purple label
-  muted:        { r: 0.68, g: 0.60, b: 0.80 }, // muted lavender
+  heading:      { r: 0.08, g: 0.16, b: 0.32 }, // deep navy
+  body:         { r: 0.24, g: 0.36, b: 0.54 }, // medium blue-gray
+  label:        { r: 0.30, g: 0.50, b: 0.76 }, // soft blue label
+  muted:        { r: 0.52, g: 0.66, b: 0.82 }, // muted steel blue
   white:        { r: 1.00, g: 1.00, b: 1.00 },
 
   // Accent
-  accent:       { r: 0.55, g: 0.38, b: 0.84 }, // medium purple
-  accentPastel: { r: 0.78, g: 0.65, b: 0.96 }, // light pastel purple
-  accentPill:   { r: 0.93, g: 0.88, b: 1.00 }, // pill background
-  riskActive:   { r: 0.65, g: 0.50, b: 0.90 }, // active risk pill
-  riskInactive: { r: 0.91, g: 0.88, b: 0.96 }, // inactive risk pill
+  accent:       { r: 0.18, g: 0.46, b: 0.88 }, // vivid blue
+  accentPastel: { r: 0.60, g: 0.78, b: 0.98 }, // light pastel blue
+  accentPill:   { r: 0.88, g: 0.94, b: 1.00 }, // pill background
+  riskActive:   { r: 0.18, g: 0.46, b: 0.88 }, // active risk pill
+  riskInactive: { r: 0.88, g: 0.93, b: 0.98 }, // inactive risk pill
 };
 
 // ─── Plugin entry ─────────────────────────────────────────────────────────────
